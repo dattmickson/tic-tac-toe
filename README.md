@@ -1,4 +1,4 @@
-# Socket.io Chat App using AngularJS
+# Socket.io Tic-tac-toe and chat using Angular JS
 
 1) ` bower install `
 
