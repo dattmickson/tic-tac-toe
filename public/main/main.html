@@ -1,7 +1,7 @@
 <div class="jumbotron">
-  <h2> Welcome <b>{{mynickname}}</b></h2>,
-  <p>Send Messages and Likes below
-  </p>
+  <h2> Hello, <b>{{mynickname}}</b></h2>,
+  <p>Would you like to play Tic-Tac-Toe??</p>
+  <p>If so, look below!</p>
 </div>
 <br>
 <!-- <div>
@@ -42,21 +42,40 @@
             ng-click="move(cell);">{{ cell.value }}</button>
   </div> -->
 <div class="row">
-  <table id="firstBoard" class="board">
-    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
+  <!-- <table id="firstBoard" class="board">
+    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-disabled="isTaken(cell)" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
+    <tr id="joinbtn"><td></td><td id="joinbtntd"></td><td id="joinbtntd"><button ng-click="joinGame()" class="btn btn-primary">Join</button></td></tr>
   </table>
 
   <table id="secondBoard" class="board">
-    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
-  </table>
+    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-disabled="isTaken(cell)" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
+    <tr id="joinbtn"><td></td><td id="joinbtntd"></td><td id="joinbtntd"><button ng-click="joinGame()" class="btn btn-primary">Join</button></td></tr>
+  </table> -->
 
   <table id="thirdBoard" class="board">
-    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
+    <tr ng-repeat="row in board">
+      <td ng-repeat="cell in row" 
+       
+        ng-class="cell.value" 
+        ng-click="move(cell);">{{ cell.value }}
+      </td>    <!-- ng-disabled="isTaken(cell) || winner" --> 
+    </tr>
+    <tr id="joinbtn">
+      <td></td>
+      <td id="joinbtntd"></td>
+      <td id="joinbtntd"><button ng-click="joinGame()" class="btn btn-primary">Join</button></td>
+    </tr>
   </table>
 
-   <table id="anotherBoard" class="board">
-    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
-  </table>
+  <span ng-hide="winner || cat">Current Player: {{ currentPlayer }}</span>
+  <span ng-show="winner">Player {{ currentPlayer }} Lost!</span>
+  <span ng-show="cat">Cat</span>
+  <p id="message">{{gameWarning}}</p>
+
+   <!-- <table id="anotherBoard" class="board">
+    <tr ng-repeat="row in board"><td ng-repeat="cell in row" ng-disabled="isTaken(cell)" ng-class="cell.value" ng-click="move(cell);">{{ cell.value }}</td></tr>
+    <tr id="joinbtn"><td></td><td id="joinbtntd"></td><td id="joinbtntd"><button ng-click="joinGame()" class="btn btn-primary">Join</button></td></tr>
+  </table>  -->
 </div>
 
   
@@ -74,6 +93,12 @@
       width: 50px;
       text-align: center;
     }
+    #joinbtn{
+      border-top: 5px solid white;
+    }
+    #joinbtntd{
+      border: 5px solid white;
+    }
   </style>
 
   <br/>
@@ -82,7 +107,7 @@
   <br>
 <div class="row">
   <div >
-    <small class="marker">Other Users</small>
+    <small class="marker">Whos Online:</small>
     <ul class="list-unstyled">
       <li class="user"
            ng-repeat="user in users track by $index">

@@ -15,9 +15,7 @@ io.on('connection', function(socket) {
   socket.on('get-users', function(){
   	socket.emit('all-users', users);
   });
-  socket.on('getPlayers', function(){
-  	socket.emit(player1, player2);
-  });
+  
   //when new sockets join
   socket.on('join', function(data){
   	console.log(data); //nickname
@@ -31,6 +29,10 @@ io.on('connection', function(socket) {
   	users.push(userObj);
   	io.emit('all-users', users)
   });
+  // socket.on('joinGame', function(data){
+  //   socket.player1 = data.player1;
+  //   socket.player2 = data.player2;
+  // });
   socket.on('send-message', function(data){
   	// socket.broadcast.emit('message-received', data);
   	io.emit('message-received', data)

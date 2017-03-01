@@ -14,11 +14,15 @@
   	$scope.likes = [];
   	$scope.mynickname = $localStorage.nickname;
   	var nickname = $scope.mynickname;
-  	var currentPlayer = 'X';
+  	$scope.currentPlayer = 'X';
+    var isCurrentPlayer = false;
   	var emptyCell = '';
   	var players = 0;
-  	$scope.player1 = '';
-  	$scope.player2 = '';
+  	// $scope.player1 = '';
+  	// $scope.player2 = '';
+    $scope.winner = false;
+    $scope.cat = false;
+    $scope.gameWarning = '';
 
   	socket.emit('get-users');
 
@@ -30,12 +34,16 @@
   	});
   	socket.on('message-received', function(data){
   		$scope.messages.push(data);
+     
   	});
 
 
     //this needs updated!!!!!!!!!!
     socket.on('move-received', function(data){
-      $scope.board = gameBoard;
+      $scope.board = data;
+      switchTurn();
+      checkWin();
+      checkCat();
     });
 
   	socket.on('user-liked', function(data){
@@ -74,23 +82,90 @@
 	// $scope.currentPlayer = {};
 
 
+    var checkRow = function(){
+     
+      for (var i = 0; i<$scope.board[0].length; i++){
+        if ($scope.board[i][0].value === $scope.board[i][1].value && $scope.board[i][1].value === $scope.board[i][2].value && $scope.board[i][0].value !== ''){
+          return true;
+        }
+        if ($scope.board[0][i].value === $scope.board[1][i].value && $scope.board[1][i].value === $scope.board[2][i].value && $scope.board[0][i].value !== ''){
+          return true;
+        }
+      }
+    }
+
+    var checkDiag = function(){
+        if ($scope.board[0][0].value === $scope.board[1][1].value && $scope.board[1][1].value === $scope.board[2][2].value && $scope.board[0][0].value !== ''){
+          return true;
+        }
+        if ($scope.board[0][2].value === $scope.board[1][1].value && $scope.board[1][1].value === $scope.board[2][0].value && $scope.board[0][2].value !== ''){
+          return true;
+        }
+    }
+
+    var checkWin = function(){
+ 
+      if(checkRow() || checkDiag()){
+        $scope.winner = true;
+      }
+      
+    }
+
+    
+    var checkCat = function(){
+      var x = 0;
+      for (var i = 0; i<$scope.board[0].length; i++){
+        for (var j = 0; j<$scope.board[0].length; j++){
+          if ($scope.board[i][j].value !== ''){
+            x ++;
+          }
+        }
+      }
+      if (x === 9){
+        $scope.cat = true;
+      }
+    }
+
+    var setMessage = function(msg) {
+      document.getElementById('message').innerText = msg;
+    }
     ///this needs updated!!!!!!!!
   	$scope.move = function(cell){
   		// angular.element(document.getElementById(table)).cell.value = currentPlayer;
-      cell.value = currentPlayer;
-      var gameBoard = $scope.board
-      socket.emit('send-move', gameBoard)
-  		switchTurn();
+      if(!isCurrentPlayer){
+        setMessage('You are not apart of this game'); 
+      } else if($scope.winner){
+        setMessage('GameOver')
+      }else if(cell.value === ''){
+        setMessage('')
+        cell.value = $scope.currentPlayer;
+        var gameBoard = $scope.board;
+        socket.emit('send-move', gameBoard);
+        checkWin();
+        checkCat();
+      } else {
+        setMessage('That square is already used');
+      }
+  		// switchTurn();
   	}
+
+    $scope.joinGame = function(){
+      isCurrentPlayer = true
+    }
 
   	var switchTurn = function(){
-  		if (currentPlayer === 'X'){
-  			currentPlayer = 'O'
+  		if ($scope.currentPlayer === 'X'){
+  			$scope.currentPlayer = 'O'
   		} else {
-  			currentPlayer = 'X'
+  			$scope.currentPlayer = 'X'
   		}
   	}
+    
+    $scope.isTaken = function(cell){
+      return cell.value !== emptyCell
+    }
 
+    
 
         // $scope.JoinIt = function(){
     //  socket.emit('getPlayers');
