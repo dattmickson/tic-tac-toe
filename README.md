@@ -4,4 +4,6 @@
 
 2) ` npm install `
 
+3) ` nodemon server.js `
+
 Running on port: 8080

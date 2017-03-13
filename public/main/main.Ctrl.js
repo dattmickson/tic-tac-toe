@@ -14,8 +14,8 @@
   	$scope.likes = [];
   	$scope.mynickname = $localStorage.nickname;
   	var nickname = $scope.mynickname;
-  	$scope.currentPlayer = 'X';
-    var isCurrentPlayer = false;
+  	
+    var isCurrentPlayer = true;
   	var emptyCell = '';
   	var players = 0;
   	// $scope.player1 = '';
@@ -40,10 +40,10 @@
 
     //this needs updated!!!!!!!!!!
     socket.on('move-received', function(data){
-      $scope.board = data;
-      switchTurn();
-      checkWin();
-      checkCat();
+      $scope.boards[data.tableID].values = data.tttb;
+      $scope.boards[data.tableID].switchTurn();
+      //checkWin();
+      //checkCat();
     });
 
   	socket.on('user-liked', function(data){
@@ -70,14 +70,66 @@
       socket.emit('send-like', likeObj);
     }
 
-	$scope.board = [
-			//0,0                        0,1                   0,2
-	[ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
-			//1,0                        1,1                   1,2
-	[ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
-			//2,0                        2,1                   2,2
-	[ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ]
-	];
+	$scope.boards = [{
+    index: 0,
+    currentPlayer: 'X',
+    values: [ 
+    [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
+    [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
+    [ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ] ],
+    switchTurn: function(){
+      if (this.currentPlayer === 'X'){
+        this.currentPlayer = 'O';
+      } else {
+        this.currentPlayer = 'X';
+      }
+    }
+  },
+  {
+    index: 1,
+    currentPlayer: 'X',
+    values:  [ 
+    [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
+    [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
+    [ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ] ],
+    switchTurn: function(){
+      if (this.currentPlayer === 'X'){
+        this.currentPlayer = 'O';
+      } else {
+        this.currentPlayer = 'X';
+      }
+    }
+  },
+  {
+    index: 2,
+    currentPlayer: 'X',
+    values: [ 
+    [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
+    [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
+    [ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ] ],
+    switchTurn: function(){
+      if (this.currentPlayer === 'X'){
+        this.currentPlayer = 'O';
+      } else {
+        this.currentPlayer = 'X';
+      }
+    }
+  },
+  {
+    index: 3,
+    currentPlayer: 'X',
+    values:  [ 
+    [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
+    [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
+    [ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ] ],
+    switchTurn: function(){
+      if (this.currentPlayer === 'X'){
+        this.currentPlayer = 'O';
+      } else {
+        this.currentPlayer = 'X';
+      }
+    }
+  }];
 
 	// $scope.currentPlayer = {};
 
@@ -130,7 +182,7 @@
       document.getElementById('message').innerText = msg;
     }
     ///this needs updated!!!!!!!!
-  	$scope.move = function(cell){
+  	$scope.move = function(cell, table){
   		// angular.element(document.getElementById(table)).cell.value = currentPlayer;
       if(!isCurrentPlayer){
         setMessage('You are not apart of this game'); 
@@ -138,11 +190,15 @@
         setMessage('GameOver')
       }else if(cell.value === ''){
         setMessage('')
-        cell.value = $scope.currentPlayer;
-        var gameBoard = $scope.board;
+        cell.value = $scope.boards[table].currentPlayer;
+        //var tableID = table;
+        var gameBoard = {
+          tttb: $scope.boards[table].values,
+          tableID: table
+        }
         socket.emit('send-move', gameBoard);
-        checkWin();
-        checkCat();
+        //checkWin();
+        //checkCat();
       } else {
         setMessage('That square is already used');
       }
@@ -153,13 +209,7 @@
       isCurrentPlayer = true
     }
 
-  	var switchTurn = function(){
-  		if ($scope.currentPlayer === 'X'){
-  			$scope.currentPlayer = 'O'
-  		} else {
-  			$scope.currentPlayer = 'X'
-  		}
-  	}
+  	
     
     $scope.isTaken = function(cell){
       return cell.value !== emptyCell
