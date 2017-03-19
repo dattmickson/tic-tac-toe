@@ -1,6 +1,7 @@
 body {
   padding-top: 20px;
   padding-bottom: 20px;
+  background-image: url('../img/concrete-wall-2.png')
 }
 
 .header {
@@ -21,7 +22,7 @@ body {
 /* Main marketing message and sign up button */
 .jumbotron {
   text-align: center;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid white;
 }
 .jumbotron .btn {
   font-size: 21px;
@@ -42,5 +43,9 @@ body {
   /* Remove the bottom border on the jumbotron for visual effect */
   .jumbotron {
     border-bottom: 0;
+    color: white;
+    /*background-color: white;*/
+    background-color: #03030d;
+    background-image: url("../img/concrete-wall-2.png");
   }
 }

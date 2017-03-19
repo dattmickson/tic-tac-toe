@@ -50,6 +50,7 @@
     socket.on('players-received', function(data){
       $scope.boards[data.tableID].playerX.name = data.playerX;
       $scope.boards[data.tableID].playerO.name = data.playerO;
+      $scope.boards[data.tableID].full = data.full;
     })
 
   	socket.on('user-liked', function(data){
@@ -79,15 +80,18 @@
 	$scope.boards = [{
     index: 0,
     currentPlayer: 'X',
+    yourMove: '',
     playerX: {
-      name: '',
+      name: '_______',
       move: 'X'
     },
     playerO: {
-      name: '',
+      name: '_______',
       move: 'O'
     },
+    full: false,
     winner: false,
+    message: '',
     values: [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -121,13 +125,16 @@
     currentPlayer: 'X',
     yourMove: '',
     playerX: {
-      name: '',
+      name: '_______',
       move: 'X'
     },
     playerO: {
-      name: '',
+      name: '_______',
       move: 'O'
     },
+    full: false,
+    winner: false,
+    message: '',
     values:  [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -138,19 +145,39 @@
       } else {
         this.currentPlayer = 'X';
       }
+    },
+    checkRow: function(){
+      for (var i = 0; i<this.values[0].length; i++){
+        if (this.values[i][0].value === this.values[i][1].value && this.values[i][1].value === this.values[i][2].value && this.values[i][0].value !== emptyCell){
+          return true;
+        }
+        if (this.values[0][i].value === this.values[1][i].value && this.values[1][i].value === this.values[2][i].value && this.values[0][i].value !== emptyCell){
+          return true;
+        }
+      }
+    },
+    checkWin: function(){
+      if(this.checkRow()){
+        console.log("winner");
+        this.winner = true;
+      }
     }
   },
   {
     index: 2,
     currentPlayer: 'X',
+    yourMove: '',
     playerX: {
-      name: '',
+      name: '_______',
       move: 'X'
     },
     playerO: {
-      name: '',
+      name: '_______',
       move: 'O'
     },
+    full: false,
+    winner: false,
+    message: '',
     values: [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -161,28 +188,21 @@
       } else {
         this.currentPlayer = 'X';
       }
-    }
-  },
-  {
-    index: 3,
-    currentPlayer: 'X',
-    playerX: {
-      name: '',
-      move: 'X'
     },
-    playerO: {
-      name: '',
-      move: 'O'
+    checkRow: function(){
+      for (var i = 0; i<this.values[0].length; i++){
+        if (this.values[i][0].value === this.values[i][1].value && this.values[i][1].value === this.values[i][2].value && this.values[i][0].value !== emptyCell){
+          return true;
+        }
+        if (this.values[0][i].value === this.values[1][i].value && this.values[1][i].value === this.values[2][i].value && this.values[0][i].value !== emptyCell){
+          return true;
+        }
+      }
     },
-    values:  [ 
-    [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
-    [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
-    [ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ] ],
-    switchTurn: function(){
-      if (this.currentPlayer === 'X'){
-        this.currentPlayer = 'O';
-      } else {
-        this.currentPlayer = 'X';
+    checkWin: function(){
+      if(this.checkRow()){
+        console.log("winner");
+        this.winner = true;
       }
     }
   }];
@@ -234,8 +254,8 @@
       }
     }
 
-    var setMessage = function(msg) {
-      document.getElementById('message').innerText = msg;
+    var setMessage = function(msg, table) {
+      $scope.boards[table].message = msg;
     }
 
 
@@ -243,13 +263,13 @@
   	$scope.move = function(cell, table){
   		// angular.element(document.getElementById(table)).cell.value = currentPlayer;
       if($scope.boards[table].playerX.name !== nickname && $scope.boards[table].playerO.name !== nickname){
-        setMessage('You are not apart of this game'); 
+        setMessage('You are not apart of this game', table); 
       } else if($scope.boards[table].yourMove !== $scope.boards[table].currentPlayer){
-        setMessage('Not your turn')
+        setMessage('Not your turn', table)
       } else if($scope.boards[table].winner){
-        setMessage('GameOver')
+        setMessage('GameOver', table)
       }else if(cell.value === ''){
-        setMessage('')
+        setMessage('Other players move', table)
         cell.value = $scope.boards[table].currentPlayer;
         //var tableID = table;
         var gameBoard = {
@@ -267,28 +287,30 @@
 
     $scope.joinGame = function(table){
       if(nickname == $scope.boards[table].playerX.name || nickname == $scope.boards[table].playerO.name){
-        setMessage('you are already apart of this game');
-      } else if($scope.boards[table].playerX.name === ''){
+        setMessage('you are already apart of this game', table);
+      } else if($scope.boards[table].playerX.name === '_______'){
         $scope.boards[table].playerX.name = nickname;
         $scope.boards[table].yourMove = 'X';
         var updateGame = {
           tableID: table,
           playerX: nickname,
-          playerO: ''
+          playerO: '_______',
+          full: false
         }
         socket.emit('update-Players', updateGame);
         console.log($scope.boards[table].playerX);
-      } else if($scope.boards[table].playerO.name == ''){
+      } else if($scope.boards[table].playerO.name == '_______'){
         $scope.boards[table].playerO.name = nickname;
         $scope.boards[table].yourMove = 'O';
         var updateGame = {
           tableID: table,
           playerX: $scope.boards[table].playerX.name,
-          playerO: nickname
+          playerO: nickname,
+          full: true
         }
         socket.emit('update-Players', updateGame);
       } else {
-        setMessage('this game is full');
+        setMessage('this game is full', table);
       }
     }
 

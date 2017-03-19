@@ -1,56 +1,50 @@
+<section class="container">
 <div class="jumbotron">
-  <h2> Hello, <b>{{mynickname}}</b></h2>,
+<div class="jtronText">
+  <h2> Hello, <b>{{mynickname}},</b></h2>
   <p>Would you like to play Tic-Tac-Toe??</p>
   <p>If so, look below!</p>
+</div>
 </div>
 <br>
 
  
-<div class="row">
+<div class="row col-md-12">
 
 
 
-
-  <table class="gameBoard" ng-repeat="board in boards ">
+<div ng-repeat="board in boards" class="col-md-4" >
+  <h4 align="center" >{{ board.playerX.name }} vs. {{ board.playerO.name }}</h4>
+  <p align="center">
+  <table class="gameBoard">
     <tr ng-repeat="row in board.values">
       <td ng-repeat="cell in row" 
         ng-class="cell.value" 
         ng-click="move(cell, board.index);">{{ cell.value }} 
       </td>    <!-- ng-disabled="isTaken(cell) || winner" --> 
     </tr>
-    <tr>
-      <td><button ng-click="joinGame(board.index)" class="btn btn-primary">Join</button></td>
-    </tr>
-    <tr>
-      <td>{{ board.playerX.name }} vs {{ board.playerO.name }}</td>
-    </tr>
-    <!-- <tr id="joinbtn">
-      <td></td>
-      <td id="joinbtntd"></td>
-      <td id="joinbtntd"><button ng-click="joinGame()" class="btn btn-primary">Join</button></td>
-    </tr> -->
-    <!-- <tr ng-hide="winner || cat"><td>Current Player: {{ board.currentPlayer }}</td></tr>
-    <tr ng-show="winner"><td>Player {{board.currentPlayer}} Lost!</td></tr>
-    <tr ng-show="winner"><td>Cat</td></tr>-->
-   <!--  <tr><td id='message'>{{gameWarning}}</td></tr>  -->
   </table>
+  </p>
+
+  <p align="center"><button ng-hide="board.full" ng-click="joinGame(board.index)" class="btn" style="width: 150px; background-color: grey; color: white" >Join Game</button></p>
+  <p align="center">{{ board.message }}</p>
+
+  
+  <!-- <p id="message"{{gameWarning}}></p> -->
 
   <!-- <span ng-hide="winner || cat"></span>
   <span ng-show="winner">Player {{ currentPlayer }} Lost!</span>
   <span ng-show="cat">Cat</span>
   <p id="message">{{gameWarning}}</p>
  -->
+ </div> <!--individual tables -->
 </div>
-<p id="message"{{gameWarning}}></p>
-
-  
 
 
   <style type="text/css">
     .gameBoard{
-      border: 5px solid white;
-      float: left;
-      margin: 10px;
+      border: 5px solid transparent;
+      margin: auto;
     }
     td{
       border: 3px solid black;
@@ -64,14 +58,32 @@
     #joinbtntd{
       border: 5px solid white;
     }
+    .jtronText{
+      background-color: grey;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .well{
+      color: white;
+      background-color: grey;
+    }
+    .top-buffer{
+      margin-top: 50px;
+    }
+    .fa-thumbs-up, .fa-thumbs-o-up{
+      color: #03030d;
+    }
+    .well{
+      background-color: #03030d;
+      background-image: url("../img/concrete-wall-2.png");
+    }
+    .form-control{
+      border: grey;
+    }
   </style>
-
-  <br/>
-  <hr/>
-  <hr/>
-  <br>
-<div class="row">
-  <div >
+ 
+<div class="row col-md-12 top-buffer">
+  <div class="col-md-3">
     <small class="marker">Whos Online:</small>
     <ul class="list-unstyled">
       <li class="user"
@@ -88,20 +100,9 @@
       </ul>
     </div>
 
-  <div >
-    <small class="marker">Likes</small>
-    <ul class="list-unstyled">
-      <li ng-repeat='username in likes track by $index'>
-        <span class='label btn-mini label-default userlabel' >
-          <i class='fa fa-thumbs-o-up'></i>
-          {{username}}
-         </span>
-         <small class="text-primary">&nbsp; sent like</small>
-      </li>
-    </ul>
-  </div>
+  
 
-  <div >
+  <div class="col-md-6">
     <form ng-submit='sendMessage()'>
       <div class='input-group'>
         <input class='input-sm form-control'
@@ -109,9 +110,10 @@
                     type='text'
                     placeholder="Type a message...">
         <span class='input-group-btn'>
-          <input class='input-sm btn btn-default'
+          <input class='input-sm btn'
           type='submit'
-          value='Send'>
+          value='Send'
+          style="color: white; background-color: grey; ">
         </span>
       </div>
     </form>
@@ -128,4 +130,17 @@
       </ul>
     </div>
   </div>
+  <div class="col-md-3">
+    <small class="marker">Likes:</small>
+    <ul class="list-unstyled">
+      <li ng-repeat='username in likes track by $index'>
+        <span class='label btn-mini label-default userlabel' >
+          <i class='fa fa-thumbs-o-up'></i>
+          {{username}}
+         </span>
+         <small class="text">&nbsp; sent like</small>
+      </li>
+    </ul>
+  </div>
 </div>
+</section>

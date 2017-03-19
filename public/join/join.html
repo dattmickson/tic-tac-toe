@@ -6,15 +6,33 @@
       </div>
       <form class="panel-body ng-pristine ng-valid" ng-submit="join()">
         <label>
-          Username
+          Enter Username
         </label>
         <input class="input-lg form-control ng-pristine ng-valid"
                     maxlength="20"
                     ng-model="name"
                     type="text">
         <br>
-        <input class="btn btn-block btn-primary" type="submit" value="SignUp">
+        <input class="btn btn-block" type="submit" value="Sign Up">
       </form>
     </div>
   </div>
+  <style type="text/css">
+    .panel{
+      background-color: #03030d;
+      background-image: url("../img/concrete-wall-2.png");
+      border: 1px solid grey !important;
+    }
+    .panel-heading{
+      background-color: grey !important;
+      border: 5px solid grey !important;
+    }
+    label{
+      color: white !important;
+    }
+    .btn{
+      color: white;
+      background-color: grey;
+    }
+  </style>
 </div>
