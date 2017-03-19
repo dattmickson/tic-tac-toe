@@ -258,6 +258,20 @@
       $scope.boards[table].message = msg;
     }
 
+    $scope.resetGame = function(table){
+      $scope.boards[table].values = [ 
+      [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
+      [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
+      [ { value: emptyCell, id:6 }, { value: emptyCell, id:7 }, { value: emptyCell, id:8 } ] ];
+
+      var gameBoard = {
+        tttb: $scope.boards[table].values,
+        tableID: table
+      }
+
+      socket.emit('send-move', gameBoard);
+
+    }
 
     ///this needs updated!!!!!!!!
   	$scope.move = function(cell, table){

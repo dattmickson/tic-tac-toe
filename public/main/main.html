@@ -26,7 +26,8 @@
   </table>
   </p>
 
-  <p align="center"><button ng-hide="board.full" ng-click="joinGame(board.index)" class="btn" style="width: 150px; background-color: grey; color: white" >Join Game</button></p>
+  <p align="center"><button ng-hide="board.full" ng-click="joinGame(board.index)" class="btn" style="width: 150px; background-color: grey; color: white; background-image: url('../img/concrete-wall-2.png');" >Join Game</button></p>
+  <p align="center"><button ng-show="board.winner" ng-click="resetGame(board.index)" class="btn" style="width: 150px; background-color: grey; color: white; background-image: url('../img/concrete-wall-2.png');" >Reset Game</button></p>
   <p align="center">{{ board.message }}</p>
 
   
@@ -62,6 +63,7 @@
       background-color: grey;
       padding: 10px;
       border-radius: 5px;
+      background-image: url("../img/concrete-wall-2.png");
     }
     .well{
       color: white;
@@ -76,6 +78,7 @@
     .well{
       background-color: #03030d;
       background-image: url("../img/concrete-wall-2.png");
+      min-height: 150px;
     }
     .form-control{
       border: grey;
@@ -83,7 +86,7 @@
   </style>
  
 <div class="row col-md-12 top-buffer">
-  <div class="col-md-3">
+  <div class="col-md-3 well">
     <small class="marker">Whos Online:</small>
     <ul class="list-unstyled">
       <li class="user"
@@ -102,7 +105,7 @@
 
   
 
-  <div class="col-md-6">
+  <div class="well col-md-6">
     <form ng-submit='sendMessage()'>
       <div class='input-group'>
         <input class='input-sm form-control'
@@ -113,12 +116,12 @@
           <input class='input-sm btn'
           type='submit'
           value='Send'
-          style="color: white; background-color: grey; ">
+          style="color: white; background-color: grey; background-image: url('../img/concrete-wall-2.png');">
         </span>
       </div>
     </form>
     <br>
-    <div class='well chatbox' id='chat_history'>
+    <div class='chatbox' id='chat_history'>
       <ul class='list-unstyled'>
         <li ng-repeat='m in messages'>
           <i class='fa fa-comment'></i>
@@ -130,7 +133,7 @@
       </ul>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 well">
     <small class="marker">Likes:</small>
     <ul class="list-unstyled">
       <li ng-repeat='username in likes track by $index'>
