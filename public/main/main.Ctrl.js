@@ -42,9 +42,15 @@
     socket.on('move-received', function(data){
       $scope.boards[data.tableID].values = data.tttb;
       $scope.boards[data.tableID].switchTurn();
+      $scope.boards[data.tableID].checkWin();
       //checkWin();
       //checkCat();
     });
+
+    socket.on('players-received', function(data){
+      $scope.boards[data.tableID].playerX.name = data.playerX;
+      $scope.boards[data.tableID].playerO.name = data.playerO;
+    })
 
   	socket.on('user-liked', function(data){
   		console.log(data);
@@ -73,6 +79,15 @@
 	$scope.boards = [{
     index: 0,
     currentPlayer: 'X',
+    playerX: {
+      name: '',
+      move: 'X'
+    },
+    playerO: {
+      name: '',
+      move: 'O'
+    },
+    winner: false,
     values: [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -83,11 +98,36 @@
       } else {
         this.currentPlayer = 'X';
       }
+    },
+    checkRow: function(){
+      for (var i = 0; i<this.values[0].length; i++){
+        if (this.values[i][0].value === this.values[i][1].value && this.values[i][1].value === this.values[i][2].value && this.values[i][0].value !== emptyCell){
+          return true;
+        }
+        if (this.values[0][i].value === this.values[1][i].value && this.values[1][i].value === this.values[2][i].value && this.values[0][i].value !== emptyCell){
+          return true;
+        }
+      }
+    },
+    checkWin: function(){
+      if(this.checkRow()){
+        console.log("winner");
+        this.winner = true;
+      }
     }
   },
   {
     index: 1,
     currentPlayer: 'X',
+    yourMove: '',
+    playerX: {
+      name: '',
+      move: 'X'
+    },
+    playerO: {
+      name: '',
+      move: 'O'
+    },
     values:  [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -103,6 +143,14 @@
   {
     index: 2,
     currentPlayer: 'X',
+    playerX: {
+      name: '',
+      move: 'X'
+    },
+    playerO: {
+      name: '',
+      move: 'O'
+    },
     values: [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -118,6 +166,14 @@
   {
     index: 3,
     currentPlayer: 'X',
+    playerX: {
+      name: '',
+      move: 'X'
+    },
+    playerO: {
+      name: '',
+      move: 'O'
+    },
     values:  [ 
     [ { value: emptyCell, id:0 }, { value: emptyCell, id:1 }, { value: emptyCell, id:2 } ],
     [ { value: emptyCell, id:3 }, { value: emptyCell, id:4 }, { value: emptyCell, id:5 } ],
@@ -134,17 +190,17 @@
 	// $scope.currentPlayer = {};
 
 
-    var checkRow = function(){
+    // var checkRow = function(){
      
-      for (var i = 0; i<$scope.board[0].length; i++){
-        if ($scope.board[i][0].value === $scope.board[i][1].value && $scope.board[i][1].value === $scope.board[i][2].value && $scope.board[i][0].value !== ''){
-          return true;
-        }
-        if ($scope.board[0][i].value === $scope.board[1][i].value && $scope.board[1][i].value === $scope.board[2][i].value && $scope.board[0][i].value !== ''){
-          return true;
-        }
-      }
-    }
+    //   for (var i = 0; i<$scope.board[0].length; i++){
+    //     if ($scope.board[i][0].value === $scope.board[i][1].value && $scope.board[i][1].value === $scope.board[i][2].value && $scope.board[i][0].value !== ''){
+    //       return true;
+    //     }
+    //     if ($scope.board[0][i].value === $scope.board[1][i].value && $scope.board[1][i].value === $scope.board[2][i].value && $scope.board[0][i].value !== ''){
+    //       return true;
+    //     }
+    //   }
+    // }
 
     var checkDiag = function(){
         if ($scope.board[0][0].value === $scope.board[1][1].value && $scope.board[1][1].value === $scope.board[2][2].value && $scope.board[0][0].value !== ''){
@@ -155,13 +211,13 @@
         }
     }
 
-    var checkWin = function(){
+    // var checkWin = function(){
  
-      if(checkRow() || checkDiag()){
-        $scope.winner = true;
-      }
+    //   if(checkRow() || checkDiag()){
+    //     $scope.winner = true;
+    //   }
       
-    }
+    // }
 
     
     var checkCat = function(){
@@ -181,12 +237,16 @@
     var setMessage = function(msg) {
       document.getElementById('message').innerText = msg;
     }
+
+
     ///this needs updated!!!!!!!!
   	$scope.move = function(cell, table){
   		// angular.element(document.getElementById(table)).cell.value = currentPlayer;
-      if(!isCurrentPlayer){
+      if($scope.boards[table].playerX.name !== nickname && $scope.boards[table].playerO.name !== nickname){
         setMessage('You are not apart of this game'); 
-      } else if($scope.winner){
+      } else if($scope.boards[table].yourMove !== $scope.boards[table].currentPlayer){
+        setMessage('Not your turn')
+      } else if($scope.boards[table].winner){
         setMessage('GameOver')
       }else if(cell.value === ''){
         setMessage('')
@@ -205,11 +265,33 @@
   		// switchTurn();
   	}
 
-    $scope.joinGame = function(){
-      isCurrentPlayer = true
+    $scope.joinGame = function(table){
+      if(nickname == $scope.boards[table].playerX.name || nickname == $scope.boards[table].playerO.name){
+        setMessage('you are already apart of this game');
+      } else if($scope.boards[table].playerX.name === ''){
+        $scope.boards[table].playerX.name = nickname;
+        $scope.boards[table].yourMove = 'X';
+        var updateGame = {
+          tableID: table,
+          playerX: nickname,
+          playerO: ''
+        }
+        socket.emit('update-Players', updateGame);
+        console.log($scope.boards[table].playerX);
+      } else if($scope.boards[table].playerO.name == ''){
+        $scope.boards[table].playerO.name = nickname;
+        $scope.boards[table].yourMove = 'O';
+        var updateGame = {
+          tableID: table,
+          playerX: $scope.boards[table].playerX.name,
+          playerO: nickname
+        }
+        socket.emit('update-Players', updateGame);
+      } else {
+        setMessage('this game is full');
+      }
     }
 
-  	
     
     $scope.isTaken = function(cell){
       return cell.value !== emptyCell

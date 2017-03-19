@@ -11,12 +11,18 @@
 
 
 
-  <table class="gameBoard" ng-repeat="board in boards | filter: query track by $index">
+  <table class="gameBoard" ng-repeat="board in boards ">
     <tr ng-repeat="row in board.values">
       <td ng-repeat="cell in row" 
         ng-class="cell.value" 
-        ng-click="move(cell, board.index);">{{ cell.value }}  <!-- wtf do i do with this shi!!!!!! -->
+        ng-click="move(cell, board.index);">{{ cell.value }} 
       </td>    <!-- ng-disabled="isTaken(cell) || winner" --> 
+    </tr>
+    <tr>
+      <td><button ng-click="joinGame(board.index)" class="btn btn-primary">Join</button></td>
+    </tr>
+    <tr>
+      <td>{{ board.playerX.name }} vs {{ board.playerO.name }}</td>
     </tr>
     <!-- <tr id="joinbtn">
       <td></td>

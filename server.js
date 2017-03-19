@@ -45,6 +45,10 @@ io.on('connection', function(socket) {
     console.log(data);
     io.emit('move-received', data)
   });
+  socket.on('update-Players', function(data){
+    console.log(data);
+    io.emit('players-received', data)
+  })
   socket.on('disconnect', function(){
     users = users.filter(function(item){
       return item.nickname !== socket.nickname;
