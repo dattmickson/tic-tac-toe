@@ -1,5 +1,5 @@
 {
-  "name": "ngApp",
+  "name": "ng-app",
   "description": "angular app using socket.io",
   "main": "server.js",
   "license": "ISC",
