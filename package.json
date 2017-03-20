@@ -9,11 +9,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "bower install"
-
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bower": "^1.8.0",
     "express": "^4.13.4",
     "path": "^0.12.7",
     "socket.io": "^1.4.5"
