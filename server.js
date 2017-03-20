@@ -9,6 +9,10 @@ var users = [];
 
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/public/index.html')
+})
+
 io.on('connection', function(socket) {
   console.log('new connection made');
 
@@ -58,6 +62,6 @@ io.on('connection', function(socket) {
 });
 
 
-server.listen(port, function() {
-  console.log("Listening on port " + port);
+server.listen(process.env.PORT || 3000, function(){
+  console.log('listening on *:3000');
 });
